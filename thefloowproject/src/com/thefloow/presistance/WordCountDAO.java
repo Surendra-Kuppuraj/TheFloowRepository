@@ -1,9 +1,5 @@
 package com.thefloow.presistance;
 
-import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * @author surendrakuppuraj
  *

@@ -1,7 +1,6 @@
 package com.thefloow.client;
 
 import java.io.IOException;
-import java.util.Map;
 
 import com.thefloow.wordcountapp.WordCountApp;
 import com.thefloow.wordcountapp.WordCountAppImpl;
