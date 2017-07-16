@@ -39,13 +39,16 @@ public class WordCountProcessorServiceImpl implements WordCountProcessorService 
 	public void createWordCount(String xmlFile) throws IOException {
 
 		Map<String, Integer> countedWordMap = filePostProcess(filePreProcess(xmlFile));
-		wordcountDAO.create(countedWordMap);
-
+		synchronized(countedWordMap){
+			wordcountDAO.create(countedWordMap);
+		}
 	}
 
 	@Override
 	public Map<String, Integer> getGeneratedWordCount() {
-		return wordcountDAO.getAll();
+		synchronized(this){
+			return wordcountDAO.getAll();
+		}		
 	}
 
 	private StringBuffer filePreProcess(final String file) throws IOException {
@@ -95,7 +98,6 @@ public class WordCountProcessorServiceImpl implements WordCountProcessorService 
 				}	
 			}
 		}
-		System.out.println(resultMap);
 		return resultMap;
 	}
 
