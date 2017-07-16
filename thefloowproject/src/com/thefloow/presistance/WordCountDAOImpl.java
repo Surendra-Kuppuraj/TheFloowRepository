@@ -19,6 +19,9 @@ public class WordCountDAOImpl implements WordCountDAO<Map<String, Integer>> {
 
 	private static final String DATABASENAME = "THEFLOOWDB";
 	private static final String TABLE_NAME = "WordCount";
+	private static final String WORD_COLUMN_NAME = "word";
+	private static final String COUNT_COLUMN_NAME = "count";
+
 	private final String hostName;
 	private MongoClient mongoClient;
 	private MongoDatabase database;
@@ -38,7 +41,7 @@ public class WordCountDAOImpl implements WordCountDAO<Map<String, Integer>> {
 			MongoCursor<Document> dbObject = collection.find().iterator();
 			while (dbObject.hasNext()) {
 				Document doc = dbObject.next();
-				queriedResult.put(doc.getString("word"), doc.getInteger("count"));
+				queriedResult.put(doc.getString(WORD_COLUMN_NAME), doc.getInteger(COUNT_COLUMN_NAME));
 			}
 		} catch (UnknownHostException ex) {
 			System.err.println("Database Connnection cannot be established: " + ex);
@@ -57,7 +60,7 @@ public class WordCountDAOImpl implements WordCountDAO<Map<String, Integer>> {
 			mongoClient = getDBConnection();
 			collection.drop();
 			words.forEach((k, v) -> {
-				collection.insertOne(new Document().append("word", k).append("count", v));
+				collection.insertOne(new Document().append(WORD_COLUMN_NAME, k).append(COUNT_COLUMN_NAME, v));
 			});
 		} catch (UnknownHostException ex) {
 			System.err.println("Database Connnection cannot be established: " + ex);
