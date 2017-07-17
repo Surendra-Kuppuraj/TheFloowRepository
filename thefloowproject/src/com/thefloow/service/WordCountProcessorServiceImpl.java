@@ -39,14 +39,14 @@ public class WordCountProcessorServiceImpl implements WordCountProcessorService 
 	public void createWordCount(String xmlFile) throws IOException {
 
 		Map<String, Integer> countedWordMap = filePostProcess(filePreProcess(xmlFile));
-		synchronized (countedWordMap) {
+		synchronized (wordcountDAO) {
 			wordcountDAO.create(countedWordMap);
 		}
 	}
 
 	@Override
 	public Map<String, Integer> getGeneratedWordCount() {
-		synchronized (this) {
+		synchronized (wordcountDAO) {
 			return wordcountDAO.getAll();
 		}
 	}
@@ -74,20 +74,20 @@ public class WordCountProcessorServiceImpl implements WordCountProcessorService 
 		if (StringUtils.isEmpty(text)) {
 			throw new IllegalArgumentException(" The text is not in acceptable way for post processing!. ");
 		}
-
+		final Integer INCREMENTAL_NUMBER = 1;
+		final Map<String, Integer> resultMap;
 		Collection<String> scannedList = new LinkedList<>();
 
 		synchronized (scannedList) {
+
 			try (Scanner scanner = new Scanner(text.toString())) {
 				scanner.useDelimiter(WHITESPACE);
 				scanner.forEachRemaining(str -> scannedList.add(str));
 			}
 			scannedList.removeAll(new Stopwords().getStopWordsList());
-		}
-		final Integer INCREMENTAL_NUMBER = 1;
-		Collection<String> countList = new ArrayList<String>(scannedList);
-		Map<String, Integer> resultMap = new HashMap<>();
-		synchronized (resultMap) {
+
+			Collection<String> countList = new ArrayList<String>(scannedList);
+			resultMap = new HashMap<>();
 			countList.forEach(word -> {
 				if (!resultMap.containsKey(word)) {
 					resultMap.put(word, INCREMENTAL_NUMBER);

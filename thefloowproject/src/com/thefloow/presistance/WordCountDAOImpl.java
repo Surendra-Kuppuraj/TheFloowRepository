@@ -34,15 +34,12 @@ public class WordCountDAOImpl implements WordCountDAO<Map<String, Integer>> {
 	@Override
 	public Map<String, Integer> getAll() {
 		MongoClient mongoClient = null;
-		Map<String, Integer> queriedResult = null;
+		final Map<String, Integer> queriedResult = new TreeMap<>();
 		try {
 			mongoClient = getDBConnection();
-			queriedResult = new TreeMap<>();
 			MongoCursor<Document> dbObject = collection.find().iterator();
-			while (dbObject.hasNext()) {
-				Document doc = dbObject.next();
-				queriedResult.put(doc.getString(WORD_COLUMN_NAME), doc.getInteger(COUNT_COLUMN_NAME));
-			}
+			dbObject.forEachRemaining(document -> { 
+				queriedResult.put(document.getString(WORD_COLUMN_NAME), document.getInteger(COUNT_COLUMN_NAME));});
 		} catch (UnknownHostException ex) {
 			System.err.println("Database Connnection cannot be established: " + ex);
 		} finally {
