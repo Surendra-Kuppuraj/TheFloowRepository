@@ -4,22 +4,21 @@
 package com.thefloow.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 import com.thefloow.presistance.WordCountDAO;
 import com.thefloow.presistance.WordCountDAOImpl;
 import com.thefloow.utils.Stopwords;
-import com.thefloow.utils.StringUtils;
 
 /**
  * @author surendrakuppuraj
@@ -51,10 +50,13 @@ public class WordCountProcessorServiceImpl implements WordCountProcessorService 
 		}
 	}
 
-	private StringBuffer filePreProcess(final String file) throws IOException {
+	private StringBuffer filePreProcess(final String file) throws IOException, IllegalArgumentException  {
+		if(Objects.isNull(file)){
+			throw new IllegalArgumentException("Given parameter is null. ");
+		}
 
-		if (!Files.exists(Paths.get(file))) {
-			throw new FileNotFoundException(" Given file does not exits!. ");
+		if (!new File(file).isFile()) {
+			throw new FileNotFoundException(" Given parameter is not a file. ");
 		}
 
 		StringBuffer bufferedText = new StringBuffer();
@@ -71,7 +73,7 @@ public class WordCountProcessorServiceImpl implements WordCountProcessorService 
 
 	private Map<String, Integer> filePostProcess(final StringBuffer text) throws IllegalArgumentException {
 
-		if (StringUtils.isEmpty(text)) {
+		if (Objects.isNull(text)) {
 			throw new IllegalArgumentException(" The text is not in acceptable way for post processing!. ");
 		}
 		final Integer INCREMENTAL_NUMBER = 1;
