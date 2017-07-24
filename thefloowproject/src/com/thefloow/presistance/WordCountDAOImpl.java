@@ -55,7 +55,6 @@ public class WordCountDAOImpl implements WordCountDAO<Map<String, Integer>> {
 		MongoClient mongoClient = null;
 		try {
 			mongoClient = getDBConnection();
-			collection.drop();
 			words.forEach((k, v) -> {
 				collection.insertOne(new Document().append(WORD_COLUMN_NAME, k).append(COUNT_COLUMN_NAME, v));
 			});
